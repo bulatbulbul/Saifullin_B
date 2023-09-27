@@ -4,6 +4,7 @@
 #include <sstream>
 
 
+
 using namespace std;
 
 struct Pipe 
@@ -47,18 +48,41 @@ bool isBool(const string& input) {
 int menu()
 {
 	int number;
-	cout << "Выберите пункт из меню" << endl;
-	cout << "Меню: 1. Добавить трубу 2. Добавить КС 3. Просмотр всех объектов 4. Редактировать трубу 5. Редактировать КС 6. Сохранить 7. Загрузить 0. Выход" << endl;
-	cin >> number;
+	while (true) {
+		string input;
+		cout << "Выберите пункт из меню" << endl;
+		cout << "Меню: 1. Добавить трубу 2. Добавить КС 3. Просмотр всех объектов 4. Редактировать трубу 5. Редактировать КС 6. Сохранить 7. Загрузить 8. Выход" << endl;
+		getline(cin, input);
+		if (isInteger(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> number;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
 	return number;
 }
 
+int countLines(string filename) {
+	ifstream file(filename);
+	string line;
+	int count = 0;
+
+	while (getline(file, line)) {
+		count++;
+	}
+	file.close();
+	return count;
+}
 void fun_1(Pipe& p)
 {
 
 	cout << "Добавление трубы" << endl;
 	cout << "Введите название: ";
-	cin.ignore(1000, '\n');
+
 	getline(cin, p.name);
 
 	while (true) {
@@ -110,13 +134,50 @@ void fun_2(CS& c)
 {
 	cout << "Добавление КС" << endl;
 	cout << "Введите название: ";
-	cin >> c.name;
-	cout << "\nВведите количество цехов: ";
-	cin >> c.number_workshop;
-	cout << "\nВведите количество цехов в работе: ";
-	cin >> c.in_work;
-	cout << "\nВведите эффективность (от 0 до 1): ";
-	cin >> c.effectiveness;
+	getline(cin, c.name);
+	while (true) {
+		string input;
+		cout << "\nВведите количество цехов: ";
+		getline(cin, input);
+		if (isInteger(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> c.number_workshop;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
+
+	while (true) {
+		string input;
+		cout << "\nВведите количество цехов в работе: ";
+		getline(cin, input);
+		if (isInteger(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> c.in_work;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
+	while (true) {
+		string input;
+		cout << "\nВведите эффективность (от 0 до 1): ";
+		getline(cin, input);
+		if (isBool(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> c.effectiveness;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
 	cout << "\n";
 }
 
@@ -139,13 +200,51 @@ void fun_4(Pipe& p)
 {
 	cout << "Редактирование трубы" << endl;
 	cout << "Введите название: ";
-	cin >> p.name;
-	cout << "\nВведите длину: ";
-	cin >> p.length;
-	cout << "\nВведите диаметр: ";
-	cin >> p.diameter;
-	cout << "\nВведите признак (0 - в ремонте, 1 - не в ремонте): ";
-	cin >> p.sign;
+	getline(cin, p.name);
+
+	while (true) {
+		string input;
+		cout << "\nВведите длину: ";
+		getline(cin, input);
+		if (isDouble(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> p.length;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
+
+	while (true) {
+		string input;
+		cout << "\nВведите диаметр: ";
+		getline(cin, input);
+		if (isDouble(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> p.diameter;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
+	while (true) {
+		string input;
+		cout << "\nВведите признак((0 - в ремонте, 1 - не в ремонте)) : ";
+		getline(cin, input);
+		if (isBool(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> p.sign;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
 	cout << "\n";
 
 }
@@ -153,38 +252,79 @@ void fun_5(CS& c)
 {
 	cout << "Редактирование КС" << endl;
 	cout << "Введите название: ";
-	cin >> c.name;
-	cout << "\nВведите количество цехов: ";
-	cin >> c.number_workshop;
-	cout << "\nВведите количество цехов в работе: ";
-	cin >> c.in_work;
-	cout << "\nВведите эффективность: ";
-	cin >> c.effectiveness;
+	getline(cin, c.name);
+	while (true) {
+		string input;
+		cout << "\nВведите количество цехов: ";
+		getline(cin, input);
+		if (isInteger(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> c.number_workshop;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
+
+	while (true) {
+		string input;
+		cout << "\nВведите количество цехов в работе: ";
+		getline(cin, input);
+		if (isInteger(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> c.in_work;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
+	while (true) {
+		string input;
+		cout << "\nВведите эффективность (от 0 до 1): ";
+		getline(cin, input);
+		if (isBool(input)) {
+			istringstream iss(input);
+			iss >> noskipws >> c.effectiveness;
+			break;
+		}
+		else {
+			cout << "Неверный ввод\n";
+			continue;
+		}
+	}
 	cout << "\n";
 }
 
+
 void fun_6(Pipe& p, CS& c)
 {
-	ofstream out;// поток для записи
-	out.open("data_1.txt");  // открываем файл для записи
-	if (out.is_open()) {
-		out << "Труба";
-		out << "\nНазвание: " << p.name;
-		out << "\nДлина: " << p.length;
-		out << "\nДиаметр: " << p.diameter;
-		out << "\nДлина: " << p.sign;
-		out << "\nКС";
-		out << "\nНазвание: " << c.name;
-		out << "\nКоличество цехов: " << c.number_workshop;
-		out << "\nКоличество цехов в работе: " << c.in_work;
-		out << "\nЭффективность: " << c.effectiveness;
-		out.close();
-		cout << "Сохранилось" << endl;
+		ofstream out;// поток для записи
+		out.open("data.txt");  // открываем файл для записи
+		if (out.is_open()) {
+			out << p.name;
+			out << "\n" << p.length;
+			out << "\n" << p.diameter;
+			out << "\n" << p.sign;
+			out << "\n" << c.name;
+			out << "\n" << c.number_workshop;
+			out << "\n" << c.in_work;
+			out << "\n" << c.effectiveness;
+			out.close();
+			cout << "Сохранилось" << endl;
+		}
+		else
+		{
+			cout << "Ошибка" << endl;
+		}
 	}
-}
+	
 void fun_7(Pipe& p,CS& c)
 {
-		ifstream file("data_2.txt");
+		ifstream file("data.txt");
 		if (file.is_open()) {
 			file >> p.name;
 			file >> p.length;
@@ -197,18 +337,18 @@ void fun_7(Pipe& p,CS& c)
 			cout << "Данные загрузились из файла." << endl;
 			file.close();
 		}
+		else
+		{
+			cout << "Ошибка" << endl;
+		}
 }
-void fun_default()
-{
-	cout << "Неверно выбрали пункт из меню, попробуйте еще раз." << endl;
-}
-
-
 int main()
 {
 	setlocale(LC_ALL, "RUS");
 	Pipe pipe;
 	CS cs;
+	int score_pipe = 0;
+	int score_cs = 0;
 	while (true) 
 	{
 		int number = menu();
@@ -216,31 +356,71 @@ int main()
 		{
 		case 1:
 			fun_1(pipe);
+			score_pipe += 1;
 			break;
 		case 2:
 			fun_2(cs);
+			score_cs += 1;
 			break;
 		case 3:
-			fun_3(pipe,cs);
+			if (score_pipe > 0 && score_cs > 0)
+			{
+				fun_3(pipe, cs);
+			}
+			else 
+			{
+				cout << "Нет трубы или КС" << endl;
+			}
 			break;
 		case 4:
-			fun_4(pipe);
+			if (score_pipe > 0)
+			{
+				fun_4(pipe);
+			}
+			else
+			{
+				cout << "Нет трубы" << endl;
+			}
 			break;
 		case 5:
-			fun_5(cs);
+			if (score_cs > 0)
+			{
+				fun_5(cs);
+			}
+			else
+			{
+				cout << "Нет КС" << endl;
+			}
 			break;
 		case 6:
-			fun_6(pipe,cs);
+			if (score_pipe > 0 && score_cs > 0)
+			{
+				fun_6(pipe, cs);
+			}
+			else
+			{
+				cout << "Нет трубы или КС" << endl;
+			}
 			break;
 		case 7:
-			fun_7(pipe,cs);
+			if (countLines("data.txt") == 8)
+			{
+				fun_7(pipe,cs);
+				score_cs += 1;
+				score_pipe += 1;
+			}
+			else
+			{
+				cout << "Не удалось загрузить" << endl;
+			}
+
 			break;
-		case 0:
+		case 8:
+			cout << "Пока!";
 			return 0;
 		default:
-			fun_default();
+			cout << "Неверный ввод\n";
 			break;
 		}
 	}
-	
 }
