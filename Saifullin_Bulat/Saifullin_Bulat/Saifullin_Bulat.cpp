@@ -51,7 +51,15 @@ int menu()
 	while (true) {
 		string input;
 		cout << "Выберите пункт из меню" << endl;
-		cout << "Меню: 1. Добавить трубу 2. Добавить КС 3. Просмотр всех объектов 4. Редактировать трубу 5. Редактировать КС 6. Сохранить 7. Загрузить 8. Выход" << endl;
+		cout << "Меню:" << endl;
+		cout << "1. Добавить трубу" << endl;
+		cout << "2. Добавить КС" << endl;
+		cout << "3. Просмотр всех объектов" << endl;
+		cout << "4. Редактировать трубу" << endl;
+		cout << "5. Редактировать КС" << endl;
+		cout << "6. Сохранить" << endl;
+		cout << "7. Загрузить" << endl;
+		cout << "8. Выход" << endl;
 		getline(cin, input);
 		if (isInteger(input)) {
 			istringstream iss(input);
@@ -77,7 +85,7 @@ int countLines(string filename) {
 	file.close();
 	return count;
 }
-void fun_1(Pipe& p)
+void Add_pipe(Pipe& p)
 {
 
 	cout << "Добавление трубы" << endl;
@@ -130,7 +138,7 @@ void fun_1(Pipe& p)
 	}
 	cout << "\n";
 }
-void fun_2(CS& c)
+void Add_cs(CS& c)
 {
 	cout << "Добавление КС" << endl;
 	cout << "Введите название: ";
@@ -181,7 +189,7 @@ void fun_2(CS& c)
 	cout << "\n";
 }
 
-void fun_3(Pipe& p, CS& c)
+void View(Pipe& p, CS& c)
 {
 	cout << "Просмотр всех объектов" << endl;
 	cout << "Труба"<< endl;
@@ -196,7 +204,7 @@ void fun_3(Pipe& p, CS& c)
 	cout << "Количество цехов в работе: " << c.in_work << endl;
 	cout << "Эффективность (от 0 до 1): " << c.effectiveness << endl;
 }
-void fun_4(Pipe& p)
+void Edit_pipe(Pipe& p)
 {
 	cout << "Редактирование трубы" << endl;
 	cout << "Введите название: ";
@@ -248,7 +256,7 @@ void fun_4(Pipe& p)
 	cout << "\n";
 
 }
-void fun_5(CS& c)
+void Edit_cs(CS& c)
 {
 	cout << "Редактирование КС" << endl;
 	cout << "Введите название: ";
@@ -300,7 +308,7 @@ void fun_5(CS& c)
 }
 
 
-void fun_6(Pipe& p, CS& c)
+void Write(Pipe& p, CS& c)
 {
 		ofstream out;// поток для записи
 		out.open("data.txt");  // открываем файл для записи
@@ -322,7 +330,7 @@ void fun_6(Pipe& p, CS& c)
 		}
 	}
 	
-void fun_7(Pipe& p,CS& c)
+void Save(Pipe& p,CS& c)
 {
 		ifstream file("data.txt");
 		if (file.is_open()) {
@@ -355,17 +363,17 @@ int main()
 		switch (number)
 		{
 		case 1:
-			fun_1(pipe);
+			Add_pipe(pipe);
 			score_pipe += 1;
 			break;
 		case 2:
-			fun_2(cs);
+			Add_cs(cs);
 			score_cs += 1;
 			break;
 		case 3:
 			if (score_pipe > 0 && score_cs > 0)
 			{
-				fun_3(pipe, cs);
+				View(pipe, cs);
 			}
 			else 
 			{
@@ -375,7 +383,7 @@ int main()
 		case 4:
 			if (score_pipe > 0)
 			{
-				fun_4(pipe);
+				Edit_pipe(pipe);
 			}
 			else
 			{
@@ -385,7 +393,7 @@ int main()
 		case 5:
 			if (score_cs > 0)
 			{
-				fun_5(cs);
+				Edit_cs(cs);
 			}
 			else
 			{
@@ -395,7 +403,7 @@ int main()
 		case 6:
 			if (score_pipe > 0 && score_cs > 0)
 			{
-				fun_6(pipe, cs);
+				Save(pipe, cs);
 			}
 			else
 			{
@@ -405,7 +413,7 @@ int main()
 		case 7:
 			if (countLines("data.txt") == 8)
 			{
-				fun_7(pipe,cs);
+				Write(pipe,cs);
 				score_cs += 1;
 				score_pipe += 1;
 			}
@@ -413,7 +421,6 @@ int main()
 			{
 				cout << "Не удалось загрузить" << endl;
 			}
-
 			break;
 		case 8:
 			cout << "Пока!";
