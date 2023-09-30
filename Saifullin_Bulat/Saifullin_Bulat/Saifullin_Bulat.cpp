@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
-#include <sstream>
 
 using namespace std;
 
@@ -28,8 +27,7 @@ int isInteger(int min, int max) {
 	while ((cin >> x).fail() || cin.peek() != '\n' || x < min || x > max) {
 		cin.clear();
 		cin.ignore(1000, '\n');
-		cout << "\n Неверный тип данных" << endl;
-		cout << "Введите число от " << min << " до " << max << endl;
+		cout << "\nДанные введены неверно" << endl;
 	}
 	return x;
 }
@@ -39,8 +37,7 @@ double isDouble(double min, double max) {
 	while ((cin >> x).fail() || cin.peek() != '\n' || x < min || x > max) {
 		cin.clear();
 		cin.ignore(1000, '\n');
-		cout << "\n Неверный тип данных" << endl;
-		cout << "Введите число от " << min << " до " << max << endl;
+		cout << "\nДанные введены неверно" << endl;
 	}
 	return x;
 }
@@ -117,7 +114,7 @@ void View_cs(CS& c)
 	cout << "Эффективность (от 0 до 1): " << c.effectiveness << endl;
 	cout << "\n";
 }
-void View(Pipe& p, CS& c, int score_pipe, int score_cs)
+void View(Pipe& p, CS& c)
 {
 	int number;
 	while (true)
@@ -131,7 +128,7 @@ void View(Pipe& p, CS& c, int score_pipe, int score_cs)
 		switch (number)
 		{
 		case 1:
-			if (score_pipe != 0)
+			if (sizeof(p.name) != 0)
 			{
 				View_pipe(p);
 			}
@@ -143,7 +140,7 @@ void View(Pipe& p, CS& c, int score_pipe, int score_cs)
 			}
 			break;
 		case 2:
-			if (score_cs != 0)
+			if (sizeof(c.name) != 0)
 			{
 				View_cs(c);
 			}
@@ -179,10 +176,10 @@ void Edit_cs(CS& c)
 	cout << "\n";
 }
 
-void Save(Pipe& p, CS& c, int score_pipe, int score_cs)
+void Save(Pipe& p, CS& c)
 {
 	ofstream file("data.txt");
-	if (score_pipe != 0) {
+	if (sizeof(p.name) != 0) {
 		if (file.is_open()) {
 			file << "Pipe" << endl;
 			file << p.name << endl;
@@ -195,7 +192,7 @@ void Save(Pipe& p, CS& c, int score_pipe, int score_cs)
 			cout << "Не удалось открыть файл" << endl;
 		}
 	}
-	if (score_cs != 0) {
+	if (sizeof(c.name) != 0) {
 		if (file.is_open()) {
 			file << "CS" << endl;
 			file << c.name << endl;
@@ -208,15 +205,15 @@ void Save(Pipe& p, CS& c, int score_pipe, int score_cs)
 			cout << "Не удалось открыть файл" << endl;
 		}
 	}
-	if (score_pipe == 0 && score_cs == 0) {
+	if (sizeof(p.name) == 0 && sizeof(c.name) == 0) {
 		cout << "Добавьте трубу или КС" << endl;
 	}
 	else {
-		if (score_pipe != 0 && score_cs != 0) 
+		if (sizeof(p.name) != 0 && sizeof(c.name) != 0)
 		{
 			cout << "Данные трубы и КС сохранены" << endl;
 		}
-		else if (score_pipe != 0)
+		else if (sizeof(p.name) != 0)
 		{
 			cout << "Данные трубы сохранены" << endl;
 		}
@@ -228,7 +225,7 @@ void Save(Pipe& p, CS& c, int score_pipe, int score_cs)
 	file.close();
 }
 
-void Load(Pipe& p,CS& c, int& score_pipe, int& score_cs)
+void Load(Pipe& p,CS& c)
 {
 	string line;
 	ifstream file("data.txt");
@@ -243,7 +240,6 @@ void Load(Pipe& p,CS& c, int& score_pipe, int& score_cs)
 			getline(file, line);
 			p.sign = stoi(line);
 			getline(file, line);
-			score_pipe += 1;
 			cout << "Данные трубы загрузились" << endl;
 			if (line == "CS") {
 				getline(file, c.name);
@@ -253,7 +249,6 @@ void Load(Pipe& p,CS& c, int& score_pipe, int& score_cs)
 				c.in_work = stoi(line);
 				getline(file, line);
 				c.effectiveness = stoi(line);
-				score_cs += 1;
 				cout << "Данные КС загрузились" << endl;
 			}
 		}
@@ -265,7 +260,6 @@ void Load(Pipe& p,CS& c, int& score_pipe, int& score_cs)
 			c.in_work = stoi(line);
 			getline(file, line);
 			c.effectiveness = stoi(line);
-			score_cs += 1;
 			cout << "Данные КС загрузились" << endl;
 		}
 		else {
@@ -283,8 +277,6 @@ int main()
 	setlocale(LC_ALL, "RUS");
 	Pipe pipe;
 	CS cs;
-	int score_pipe = 0;
-	int score_cs = 0;
 	while (true) 
 	{
 		int number = menu();
@@ -292,25 +284,23 @@ int main()
 		{
 		case 1:
 			Add_pipe(pipe);
-			score_pipe += 1;
 			break;
 		case 2:
 			Add_cs(cs);
-			score_cs += 1;
 			break;
 		case 3:
-			if (score_pipe != 0 || score_cs != 0)
+			if (sizeof(pipe.name) != 0 || sizeof(cs.name) != 0)
 			{
-				View(pipe, cs, score_pipe,score_cs);
+				View(pipe, cs);
 			}
 			else 
 			{
-				cout << "Нет трубы или КС" << endl;
+				cout << "Нет трубы и КС" << endl;
 				cout << "\n";
 			}
 			break;
 		case 4:
-			if (score_pipe != 0)
+			if (sizeof(pipe.name) != 0)
 			{
 				Edit_pipe(pipe);
 			}
@@ -321,7 +311,7 @@ int main()
 			}
 			break;
 		case 5:
-			if (score_cs != 0)
+			if (sizeof(cs.name) != 0)
 			{
 				Edit_cs(cs);
 			}
@@ -332,9 +322,9 @@ int main()
 			}
 			break;
 		case 6:
-			if (score_pipe > 0 || score_cs > 0)
+			if (sizeof(pipe.name) != 0 || sizeof(cs.name) != 0)
 			{
-				Save(pipe, cs, score_pipe, score_cs);
+				Save(pipe, cs);
 			}
 			else
 			{
@@ -343,7 +333,7 @@ int main()
 			}
 			break;
 		case 7:
-			Load(pipe,cs,score_pipe,score_cs);
+			Load(pipe,cs);
 			break;
 		case 0:
 			cout << "Пока!";
