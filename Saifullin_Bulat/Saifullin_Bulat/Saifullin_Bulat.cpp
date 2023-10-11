@@ -128,7 +128,7 @@ void View(Pipe& p, CS& c)
 		switch (number)
 		{
 		case 1:
-			if (sizeof(p.name) != 0)
+			if (p.name.size() != 0)
 			{
 				View_pipe(p);
 			}
@@ -140,7 +140,7 @@ void View(Pipe& p, CS& c)
 			}
 			break;
 		case 2:
-			if (sizeof(c.name) != 0)
+			if (c.name.size() != 0)
 			{
 				View_cs(c);
 			}
@@ -179,7 +179,7 @@ void Edit_cs(CS& c)
 void Save(Pipe& p, CS& c)
 {
 	ofstream file("data.txt");
-	if (sizeof(p.name) != 0) {
+	if (p.name.size() != 0) {
 		if (file.is_open()) {
 			file << "Pipe" << endl;
 			file << p.name << endl;
@@ -192,7 +192,7 @@ void Save(Pipe& p, CS& c)
 			cout << "Не удалось открыть файл" << endl;
 		}
 	}
-	if (sizeof(c.name) != 0) {
+	if (c.name.size() != 0) {
 		if (file.is_open()) {
 			file << "CS" << endl;
 			file << c.name << endl;
@@ -205,15 +205,15 @@ void Save(Pipe& p, CS& c)
 			cout << "Не удалось открыть файл" << endl;
 		}
 	}
-	if (sizeof(p.name) == 0 && sizeof(c.name) == 0) {
+	if ((p.name.size() == 0) && (c.name.size() == 0)) {
 		cout << "Добавьте трубу или КС" << endl;
 	}
 	else {
-		if (sizeof(p.name) != 0 && sizeof(c.name) != 0)
+		if ((p.name.size() != 0) && (c.name.size() != 0))
 		{
 			cout << "Данные трубы и КС сохранены" << endl;
 		}
-		else if (sizeof(p.name) != 0)
+		else if (p.name.size() != 0)
 		{
 			cout << "Данные трубы сохранены" << endl;
 		}
@@ -289,7 +289,7 @@ int main()
 			Add_cs(cs);
 			break;
 		case 3:
-			if (sizeof(pipe.name) != 0 || sizeof(cs.name) != 0)
+			if ((pipe.name.size() != 0) || (cs.name.size() != 0))
 			{
 				View(pipe, cs);
 			}
@@ -300,7 +300,7 @@ int main()
 			}
 			break;
 		case 4:
-			if (sizeof(pipe.name) != 0)
+			if (pipe.name.size() != 0)
 			{
 				Edit_pipe(pipe);
 			}
@@ -311,7 +311,7 @@ int main()
 			}
 			break;
 		case 5:
-			if (sizeof(cs.name) != 0)
+			if (cs.name.size() != 0)
 			{
 				Edit_cs(cs);
 			}
@@ -322,7 +322,7 @@ int main()
 			}
 			break;
 		case 6:
-			if (sizeof(pipe.name) != 0 || sizeof(cs.name) != 0)
+			if ((pipe.name.size() != 0) || (cs.name.size() != 0))
 			{
 				Save(pipe, cs);
 			}
