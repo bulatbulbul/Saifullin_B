@@ -176,107 +176,66 @@ void Edit_cs(CS& c)
 	cout << "\n";
 }
 
-void Save(Pipe& p, CS& c)
-{
-	ofstream file("data.txt");
-	if (p.name.size() != 0) {
-		if (file.is_open()) {
-			file << "Pipe" << endl;
-			file << p.name << endl;
-			file << p.length << endl;
-			file << p.diameter << endl;
-			file << p.sign << endl;
-
-		}
-		else {
-			cout << "Не удалось открыть файл" << endl;
-		}
-	}
-	if (c.name.size() != 0) {
-		if (file.is_open()) {
-			file << "CS" << endl;
-			file << c.name << endl;
-			file << c.number_workshop << endl;
-			file << c.in_work << endl;
-			file << c.effectiveness << endl;
-
-		}
-		else {
-			cout << "Не удалось открыть файл" << endl;
-		}
-	}
-	if ((p.name.size() == 0) && (c.name.size() == 0)) {
-		cout << "Добавьте трубу или КС" << endl;
+void Save_pipe(Pipe& p, ofstream& out) {
+	if (out.is_open()) {
+		out << p.name << endl;
+		out << p.length << endl;
+		out << p.diameter << endl;
+		out << p.sign << endl;
+		cout << "Данные трубы сохранены" << endl;
 	}
 	else {
-		if ((p.name.size() != 0) && (c.name.size() != 0))
-		{
-			cout << "Данные трубы и КС сохранены" << endl;
-		}
-		else if (p.name.size() != 0)
-		{
-			cout << "Данные трубы сохранены" << endl;
-		}
-		else
-		{
-			cout << "Данные КС сохранены" << endl;
-		}
+		cout << "Ошибка!";
 	}
-	file.close();
 }
 
-void Load(Pipe& p,CS& c)
-{
-	string line;
-	ifstream file("data.txt");
-	if (file.is_open()) {
-		getline(file, line);
-		if (line == "Pipe") {
-			getline(file, p.name);
-			getline(file, line);
-			p.length = stod(line);
-			getline(file, line);
-			p.diameter = stod(line);
-			getline(file, line);
-			p.sign = stoi(line);
-			getline(file, line);
-			cout << "Данные трубы загрузились" << endl;
-			if (line == "CS") {
-				getline(file, c.name);
-				getline(file, line);
-				c.number_workshop = stoi(line);
-				getline(file, line);
-				c.in_work = stoi(line);
-				getline(file, line);
-				c.effectiveness = stoi(line);
-				cout << "Данные КС загрузились" << endl;
-			}
-		}
-		else if (line == "CS") {
-			getline(file, c.name);
-			getline(file, line);
-			c.number_workshop = stoi(line);
-			getline(file, line);
-			c.in_work = stoi(line);
-			getline(file, line);
-			c.effectiveness = stoi(line);
-			cout << "Данные КС загрузились" << endl;
-		}
-		else {
-			cout << "Файл пуст" << endl;
-		}
+void Save_cs(CS& c, ofstream& out) {
+	if (out.is_open()) {
+		out << c.name << endl;
+		out << c.number_workshop << endl;
+		out << c.in_work << endl;
+		out << c.effectiveness << endl;
+		cout << "Данные КС сохранены" << endl;
 	}
 	else {
-		cout << "Не удалось открыть файл" << endl;
+		cout << "Ошибка!";
 	}
-	file.close();
+}
 
+
+void Load_pipe(Pipe & p, ifstream& read) {
+	if (read.is_open()) {
+		read >> p.name;
+		read >> p.length;
+		read >> p.diameter;
+		read >> p.sign;
+		cout << "Данные трубы загрузились" << endl;
+
+	}
+	else {
+		cout << "Ошибка!";
+	}
+}
+
+void Load_cs(CS& c, ifstream& read) {
+	if (read.is_open()) {
+		read >> c.name;
+		read >> c.number_workshop;
+		read >> c.in_work;
+		read >> c.effectiveness;
+		cout << "Данные КС загрузились" << endl;
+
+	}
+	else {
+		cout << "Ошибка!";
+	}
 }
 int main()
 {
 	setlocale(LC_ALL, "RUS");
 	Pipe pipe;
 	CS cs;
+	ifstream read;
 	while (true) 
 	{
 		int number = menu();
@@ -324,7 +283,17 @@ int main()
 		case 6:
 			if ((pipe.name.size() != 0) || (cs.name.size() != 0))
 			{
-				Save(pipe, cs);
+				ofstream out;
+				out.open("data.txt");
+				if (pipe.name.size() != 0) {
+					out << "Pipe\n";
+					Save_pipe(pipe, out);
+				}
+				if (cs.name.size() != 0) {
+					out << "CS\n";
+					Save_cs(cs, out);
+				}
+				break;
 			}
 			else
 			{
@@ -333,7 +302,21 @@ int main()
 			}
 			break;
 		case 7:
-			Load(pipe,cs);
+			read.open("data.txt");
+			if (read.peek() == std::ifstream::traits_type::eof()) {  // условие пустоты файла
+				cout << "Файл пуст!\n";
+			}
+			else {
+				string line;
+				while (getline(read, line)) {
+					if (line.find("Pipe") != string::npos) {
+						Load_pipe(pipe, read);
+					}
+					if (line.find("CS") != string::npos) {
+						Load_cs(cs, read);
+					}
+				}
+			}
 			break;
 		case 0:
 			cout << "Пока!";
