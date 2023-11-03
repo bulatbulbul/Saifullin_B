@@ -127,7 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Saifullin_Bulat.cpp" />
+    <ClCompile Include="ConsoleFunctions.cpp" />
+    <ClCompile Include="CS.cpp" />
+    <ClCompile Include="Header.cpp" />
+    <ClCompile Include="Pipe.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConsoleFunctions.h" />
+    <ClInclude Include="CS.h" />
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="Pipe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

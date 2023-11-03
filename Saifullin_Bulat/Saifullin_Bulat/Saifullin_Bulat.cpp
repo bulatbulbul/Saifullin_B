@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿/*
+#include <iostream>
 #include <fstream>
 #include <string>
 
@@ -22,7 +23,8 @@ struct CS
 	double effectiveness;//эффективность (некий показатель, обобщающий различные специфические характеристики) от 0 до 1
 };
 
-int isInteger(int min, int max) {
+template <typename T>
+T GetCorrectNumber(T min, T max) {
 	int x;
 	while ((cin >> x).fail() || cin.peek() != '\n' || x < min || x > max) {
 		cin.clear();
@@ -32,15 +34,6 @@ int isInteger(int min, int max) {
 	return x;
 }
 
-double isDouble(double min, double max) {
-	double x;
-	while ((cin >> x).fail() || cin.peek() != '\n' || x < min || x > max) {
-		cin.clear();
-		cin.ignore(1000, '\n');
-		cout << "\nДанные введены неверно" << endl;
-	}
-	return x;
-}
 int menu()
 {
 	int number;
@@ -56,7 +49,7 @@ int menu()
 		cout << "6. Сохранить" << endl;
 		cout << "7. Загрузить" << endl;
 		cout << "0. Выход" << endl;
-		number = isInteger(0, 7);
+		number = GetCorrectNumber(0, 7);
 		cout << "\n";
 		break;
 	}
@@ -71,9 +64,9 @@ void Add_pipe(Pipe& p)
 	cin.ignore(INT_MAX, '\n');
 	getline(cin, p.name);
 	cout << "Введите длину: ";
-	p.length = isDouble(0.0, DBL_MAX);
+	p.length = GetCorrectNumber(0.0, DBL_MAX);
 	cout << "Введите диаметр: ";
-	p.diameter = isDouble(0.0, DBL_MAX);
+	p.diameter = GetCorrectNumber(0.0, DBL_MAX);
 	p.sign = true;
 	cout << "\n";
 }
@@ -86,11 +79,11 @@ void Add_cs(CS& c)
 	cin.ignore(INT_MAX, '\n');
 	getline(cin, c.name);
 	cout << "Введите количество цехов: ";
-	c.number_workshop = isInteger(0, INT_MAX);
+	c.number_workshop = GetCorrectNumber(0, INT_MAX);
 	cout << "Введите количество цехов в работе: ";
-	c.in_work = isInteger(0, c.number_workshop);
+	c.in_work = GetCorrectNumber(0, c.number_workshop);
 	cout << "Введите эффективность (от 0 до 1): ";
-	c.effectiveness = isDouble(0.0, 1.0);
+	c.effectiveness = GetCorrectNumber(0.0, 1.0);
 	cout << "\n";
 }
 
@@ -114,128 +107,201 @@ void View_cs(CS& c)
 	cout << "Эффективность (от 0 до 1): " << c.effectiveness << endl;
 	cout << "\n";
 }
-void View(Pipe& p, CS& c)
+void View( Pipe& p, CS& c)
 {
-	int number;
-	while (true)
+	if ((p.name.size() != 0) || (c.name.size() != 0))
 	{
-		cout << "Выберите:" << endl;
-		cout << "1. Просмотр трубы" << endl;
-		cout << "2. Просмотр КС" << endl;
-		cout << "0. Назад" << endl;
-		number = isInteger(0, 2);
-		cout << "\n";
-		switch (number)
+		int number;
+		while (true)
 		{
-		case 1:
-			if (p.name.size() != 0)
+			cout << "Выберите:" << endl;
+			cout << "1. Просмотр трубы" << endl;
+			cout << "2. Просмотр КС" << endl;
+			cout << "0. Назад" << endl;
+			number = GetCorrectNumber(0, 2);
+			cout << "\n";
+			switch (number)
 			{
-				View_pipe(p);
-			}
-			else
-			{
-				cout << "Добавьте трубу" << endl;
-				cout << "\n";
+			case 1:
+				if (p.name.size() != 0)
+				{
+					View_pipe(p);
+				}
+				else
+				{
+					cout << "Добавьте трубу" << endl;
+					cout << "\n";
 
+				}
+				break;
+			case 2:
+				if (c.name.size() != 0)
+				{
+					View_cs(c);
+				}
+				else
+				{
+					cout << "Добавьте КС" << endl;
+					cout << "\n";
+				}
+				break;
+			case 0:
+				return ;
+			default:
+				cout << "Ошибка выбора." << endl;
 			}
-			break;
-		case 2:
-			if (c.name.size() != 0)
-			{
-				View_cs(c);
-			}
-			else
-			{
-				cout << "Добавьте КС" << endl;
-				cout << "\n";
-			}
-			break;
-		case 0:
-			return ;
-		default:
-			cout << "Ошибка выбора." << endl;
 		}
+	}
+	else
+	{
+		cout << "Нет трубы и КС" << endl;
+		cout << "\n";
 	}
 }
 
 void Edit_pipe(Pipe& p)
 {
-	cout << "Редактирование трубы" << endl;
-	cout << "Введите признак 'в ремонте'  (0 - в ремонте, 1 - не в ремонте): " << endl;
-	p.sign = isInteger(0,1);
-	cout << "\n";
+	if (p.name.size() != 0)
+	{
+		cout << "Редактирование трубы" << endl;
+		cout << "Введите признак 'в ремонте'  (0 - в ремонте, 1 - не в ремонте): " << endl;
+		p.sign = GetCorrectNumber(0,1);
+		cout << "\n";
+	}
+	else
+	{
+		cout << "Добавьте трубy" << endl;
+		cout << "\n";
+	}
 }
 
 void Edit_cs(CS& c)
 {
-	cout << "Редактирование КС" << endl;
-	cout << "Введите количество цехов в работе: " << endl;
-	c.in_work = isInteger(0, c.number_workshop);
-	cout << "Введите эффективность (от 0 до 1): " << endl;
-	c.effectiveness = isDouble(0, 1);
-	cout << "\n";
-}
-
-void Save_pipe(Pipe& p, ofstream& out) {
-	if (out.is_open()) {
-		out << p.name << endl;
-		out << p.length << endl;
-		out << p.diameter << endl;
-		out << p.sign << endl;
-		cout << "Данные трубы сохранены" << endl;
+	if (c.name.size() != 0)
+	{
+		cout << "Редактирование КС" << endl;
+		cout << "Введите количество цехов в работе: " << endl;
+		c.in_work = GetCorrectNumber(0, c.number_workshop);
+		cout << "Введите эффективность (от 0 до 1): " << endl;
+		c.effectiveness = GetCorrectNumber(0, 1);
+		cout << "\n";
 	}
-	else {
-		cout << "Ошибка!";
+	else
+	{
+		cout << "Добавьте КС" << endl;
+		cout << "\n";
 	}
 }
 
-void Save_cs(CS& c, ofstream& out) {
-	if (out.is_open()) {
-		out << c.name << endl;
-		out << c.number_workshop << endl;
-		out << c.in_work << endl;
-		out << c.effectiveness << endl;
-		cout << "Данные КС сохранены" << endl;
+void Save(const Pipe& p, const CS& c)
+{
+	if ((p.name.size() != 0) || (c.name.size() != 0))
+	{
+		ofstream file("data.txt");
+		if (p.name.size() != 0) {
+			if (file.is_open()) {
+				file << "Pipe" << endl;
+				file << p.name << endl;
+				file << p.length << endl;
+				file << p.diameter << endl;
+				file << p.sign << endl;
+
+			}
+			else {
+				cout << "Не удалось открыть файл" << endl;
+			}
+		}
+		if (c.name.size() != 0) {
+			if (file.is_open()) {
+				file << "CS" << endl;
+				file << c.name << endl;
+				file << c.number_workshop << endl;
+				file << c.in_work << endl;
+				file << c.effectiveness << endl;
+
+			}
+			else {
+				cout << "Не удалось открыть файл" << endl;
+			}
+		}
+		if ((p.name.size() == 0) && (c.name.size() == 0)) {
+			cout << "Добавьте трубу или КС" << endl;
+		}
+		else {
+			if ((p.name.size() != 0) && (c.name.size() != 0))
+			{
+				cout << "Данные трубы и КС сохранены" << endl;
+			}
+			else if (p.name.size() != 0)
+			{
+				cout << "Данные трубы сохранены" << endl;
+			}
+			else
+			{
+				cout << "Данные КС сохранены" << endl;
+			}
+		}
+		file.close();
 	}
-	else {
-		cout << "Ошибка!";
+	else
+	{
+		cout << "Добавьте трубу или КС" << endl;
+		cout << "\n";
 	}
 }
 
-
-void Load_pipe(Pipe & p, ifstream& read) {
-	if (read.is_open()) {
-		read >> p.name;
-		read >> p.length;
-		read >> p.diameter;
-		read >> p.sign;
-		cout << "Данные трубы загрузились" << endl;
-
+void Load(Pipe& p,CS& c)
+{
+	string line;
+	ifstream file("data.txt");
+	if (file.is_open()) {
+		getline(file, line);
+		if (line == "Pipe") {
+			getline(file, p.name);
+			getline(file, line);
+			p.length = stod(line);
+			getline(file, line);
+			p.diameter = stod(line);
+			getline(file, line);
+			p.sign = stoi(line);
+			getline(file, line);
+			cout << "Данные трубы загрузились" << endl;
+			if (line == "CS") {
+				getline(file, c.name);
+				getline(file, line);
+				c.number_workshop = stoi(line);
+				getline(file, line);
+				c.in_work = stoi(line);
+				getline(file, line);
+				c.effectiveness = stoi(line);
+				cout << "Данные КС загрузились" << endl;
+			}
+		}
+		else if (line == "CS") {
+			getline(file, c.name);
+			getline(file, line);
+			c.number_workshop = stoi(line);
+			getline(file, line);
+			c.in_work = stoi(line);
+			getline(file, line);
+			c.effectiveness = stod(line);
+			cout << "Данные КС загрузились" << endl;
+		}
+		else {
+			cout << "Файл пуст" << endl;
+		}
 	}
 	else {
-		cout << "Ошибка!";
+		cout << "Не удалось открыть файл" << endl;
 	}
-}
+	file.close();
 
-void Load_cs(CS& c, ifstream& read) {
-	if (read.is_open()) {
-		read >> c.name;
-		read >> c.number_workshop;
-		read >> c.in_work;
-		read >> c.effectiveness;
-		cout << "Данные КС загрузились" << endl;
-
-	}
-	else {
-		cout << "Ошибка!";
-	}
 }
 int main()
 {
 	setlocale(LC_ALL, "RUS");
 	Pipe pipe;
 	CS cs;
-	ifstream read;
 	while (true) 
 	{
 		int number = menu();
@@ -248,75 +314,19 @@ int main()
 			Add_cs(cs);
 			break;
 		case 3:
-			if ((pipe.name.size() != 0) || (cs.name.size() != 0))
-			{
-				View(pipe, cs);
-			}
-			else 
-			{
-				cout << "Нет трубы и КС" << endl;
-				cout << "\n";
-			}
+			View(pipe, cs);
 			break;
 		case 4:
-			if (pipe.name.size() != 0)
-			{
-				Edit_pipe(pipe);
-			}
-			else
-			{
-				cout << "Добавьте трубy" << endl;
-				cout << "\n";
-			}
+			Edit_pipe(pipe);
 			break;
 		case 5:
-			if (cs.name.size() != 0)
-			{
-				Edit_cs(cs);
-			}
-			else
-			{
-				cout << "Добавьте КС" << endl;
-				cout << "\n";
-			}
+			Edit_cs(cs);
 			break;
 		case 6:
-			if ((pipe.name.size() != 0) || (cs.name.size() != 0))
-			{
-				ofstream out;
-				out.open("data.txt");
-				if (pipe.name.size() != 0) {
-					out << "Pipe\n";
-					Save_pipe(pipe, out);
-				}
-				if (cs.name.size() != 0) {
-					out << "CS\n";
-					Save_cs(cs, out);
-				}
-				break;
-			}
-			else
-			{
-				cout << "Добавьте трубу или КС" << endl;
-				cout << "\n";
-			}
+			Save(pipe, cs);
 			break;
 		case 7:
-			read.open("data.txt");
-			if (read.peek() == std::ifstream::traits_type::eof()) {  // условие пустоты файла
-				cout << "Файл пуст!\n";
-			}
-			else {
-				string line;
-				while (getline(read, line)) {
-					if (line.find("Pipe") != string::npos) {
-						Load_pipe(pipe, read);
-					}
-					if (line.find("CS") != string::npos) {
-						Load_cs(cs, read);
-					}
-				}
-			}
+			Load(pipe,cs);
 			break;
 		case 0:
 			cout << "Пока!";
@@ -329,3 +339,4 @@ int main()
 		}
 	}
 }
+*/
