@@ -1,52 +1,71 @@
-#include "CS.h"
-#include <fstream>
 #include <iostream>
-#include <Header.h>
+#include <fstream>
+
+#include "CS.h"
+#include "Functions.h"
 
 using namespace std;
 
-void Add_cs(CS& c)
+int CS::Nextid = 1;
+
+CS::CS()
 {
-	cout << "Добавление КС" << endl;
-	cout << "Введите название: ";
-	cin.clear();
-	cin.ignore(INT_MAX, '\n');
-	getline(cin, c.name);
+	this->id = Nextid;
+	Nextid += 1;
+}
+
+void CS::add() {
+	cout << "Введите название станции: ";
+	name = get_str();
 	cout << "Введите количество цехов: ";
-	c.number_workshop = GetCorrectNumber(0, INT_MAX);
-	cout << "Введите количество цехов в работе: ";
-	c.in_work = GetCorrectNumber(0, c.number_workshop);
-	cout << "Введите эффективность (от 0 до 1): ";
-	c.effectiveness = GetCorrectNumber(0.0, 1.0);
-	cout << "\n";
+	num_department = get_correct_value<int>(0, INT_MAX);
+	cout << "Введите количество работающих цехов: ";
+	work_department = get_correct_value<int>(0, num_department);
+	cout << "Введите его эффективность: ";
+	efficiency = get_correct_value<double>(0.0, DBL_MAX);
 }
 
-void View_cs(CS& c)
-{
-	cout << "Просмотр КС" << endl;
-	cout << "КС" << endl;
-	cout << "Название: " << c.name << endl;
-	cout << "Количество цехов: " << c.number_workshop << endl;
-	cout << "Количество цехов в работе: " << c.in_work << endl;
-	cout << "Эффективность (от 0 до 1): " << c.effectiveness << endl;
-	cout << "\n";
-}
-
-void Edit_cs(CS& c)
-{
-	if (c.name.size() != 0)
-	{
-		cout << "Редактирование КС" << endl;
-		cout << "Введите количество цехов в работе: " << endl;
-		c.in_work = GetCorrectNumber(0, c.number_workshop);
-		cout << "Введите эффективность (от 0 до 1): " << endl;
-		c.effectiveness = GetCorrectNumber(0, 1);
-		cout << "\n";
+void CS::view() {
+	if (!name.empty()) {
+		cout << "Станция" << '\n';
+		cout << getid() << endl;
+		cout << "Название станции - " << name << '\n';
+		cout << "Количество цехов - " << num_department << '\n';
+		cout << "Количество работающих цехов - " << work_department << '\n';
+		cout << "Эффективность станции - " << efficiency << '\n';
 	}
-	else
-	{
-		cout << "Добавьте КС" << endl;
-		cout << "\n";
+	else {
+		cout << "КС отсутствует\n";
 	}
 }
 
+void CS::change() {
+	cout << "Меняется КС с id " << id << '\n';
+	cout << "Сколько цехов задействовано в работе: ";
+	work_department = get_correct_value(0, num_department);
+}
+
+void CS::save(ofstream& out) {
+	if (out.is_open()) {
+		out << "comp" << '\n';
+		out << id << '\n';
+		out << name << '\n';
+		out << num_department << '\n';
+	}
+	else {
+		cout << "Ошибка!";
+	}
+}
+
+void CS::download(ifstream& read) {
+	if (read.is_open()) {
+		read >> id;
+		read >> name;
+		read >> num_department;
+		read >> work_department;
+		read >> efficiency;
+	}
+	else {
+		cout << "Ошибка!";
+	}
+}

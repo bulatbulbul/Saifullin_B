@@ -1,14 +1,22 @@
 #pragma once
-#include <iostream>
 #include <fstream>
 
 using namespace std;
 
-struct CS
+class CS
 {
-	//Свойства КС
-	string name; //название
-	int number_workshop;//количество цехов
-	int in_work;//количество цехов в работе
-	double effectiveness;//эффективность (некий показатель, обобщающий различные специфические характеристики) от 0 до 1
+	int id;
+	static int Nextid;
+public:
+	inline int getid() const { return id; };
+	string name;
+	int num_department;
+	int work_department;
+	double efficiency;
+	CS();
+	void add();
+	void view();
+	void change();
+	void download(ifstream& read);
+	void save(ofstream& out);
 };

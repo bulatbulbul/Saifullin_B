@@ -1,51 +1,80 @@
-#include "Pipe.h"
-#include <fstream>
 #include <iostream>
-#include <Header.h>
+#include <fstream>
+
+#include "Pipe.h"
+#include "Functions.h"
 
 using namespace std;
 
-void Add_pipe(Pipe& p)
+int Pipe::Nextid = 1;
+
+Pipe::Pipe()
 {
-	cout << "Добавление трубы" << endl;
-	cout << "Введите название: ";
-	cin.clear();
-	cin.ignore(INT_MAX, '\n');
-	getline(cin, p.name);
-	cout << "Введите длину: ";
-	p.length = GetCorrectNumber(0.0, DBL_MAX);
-	cout << "Введите диаметр: ";
-	p.diameter = GetCorrectNumber(0.0, DBL_MAX);
-	p.sign = true;
-	cout << "\n";
+	this->id = Nextid;
+	Nextid += 1;
 }
 
-void View_pipe(Pipe& p)
-{
-	cout << "Просмотр трубы" << endl;
-	cout << "Труба" << endl;
-	cout << "Название: " << p.name << endl;
-	cout << "Длина: " << p.length << endl;
-	cout << "Диаметр: " << p.diameter << endl;
-	cout << "Признак 'в ремонте' (0 - в ремонте, 1 - не в ремонте): " << p.sign << endl;
-	cout << "\n";
+void Pipe::add() {
+	cout << "Введите название трубы: ";
+	name = get_str();
+	cout << "Введите длину трубы: ";
+	length = get_correct_value<int>(1, INT_MAX);
+	cout << "Введите диаметр трубы: ";
+	diameter = get_correct_value<int>(1, INT_MAX);
+	cout << "Подлежит ли она ремонту?: ";
+	maintenance = get_correct_value<bool>(0, 1);
 }
 
-void Edit_pipe(Pipe& p)
-{
-	if (p.name.size() != 0)
-	{
-		cout << "Редактирование трубы" << endl;
-		cout << "Введите признак 'в ремонте'  (0 - в ремонте, 1 - не в ремонте): " << endl;
-		p.sign = GetCorrectNumber(0, 1);
-		cout << "\n";
+void Pipe::view() {
+	if (!name.empty()) {
+		cout << "Труба" << '\n';
+		cout << id << endl;
+		cout << "Название трубы - " << name << '\n';
+		cout << "Длина трубы - " << length << '\n';
+		cout << "Диаметр трубы - " << diameter << '\n';
+		if (maintenance == 1) {
+			cout << "Ремонт?: Yes\n";
+		}
+		else {
+			cout << "Ремонт?: No\n";
+		}
 	}
-	else
-	{
-		cout << "Добавьте трубy" << endl;
-		cout << "\n";
+	else {
+		cout << "Труба отсутствует\n";
 	}
 }
 
+void Pipe::change() {
+	cout << "Меняется труба с id " << id << '\n';
+	cout << "Работает труба или нет(0 - работает, 1 - не работает): ";
+	maintenance = get_correct_value(0, 1);
+}
 
+void Pipe::save(ofstream& out) {
+	if (out.is_open()) {
+		out << "pipe" << '\n';
+		out << id << '\n';
+		out << name << '\n';
+		out << length << '\n';
+		out << diameter << '\n';
+		out << maintenance << '\n';
+		cout << "Данные трубы " << id << " загружены в файл." << '\n';
+	}
+	else {
+		cout << "Ошибка!";
+	}
+}
 
+void Pipe::download(ifstream& read) {
+	if (read.is_open()) {
+		read >> id;
+		read >> name;
+		read >> length;
+		read >> diameter;
+		read >> maintenance;
+
+	}
+	else {
+		cout << "Ошибка!";
+	}
+}
