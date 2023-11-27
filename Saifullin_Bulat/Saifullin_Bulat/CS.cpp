@@ -51,6 +51,8 @@ void CS::save(ofstream& out) {
 		out << id << '\n';
 		out << name << '\n';
 		out << num_department << '\n';
+		out << work_department << '\n';
+		out << efficiency << '\n';
 	}
 	else {
 		cout << "Îøèáêà!";

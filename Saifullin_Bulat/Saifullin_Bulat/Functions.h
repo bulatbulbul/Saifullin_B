@@ -8,11 +8,11 @@
 #include "Pipe.h"
 #include "logging.h"
 
-
+using namespace std;
 extern unordered_map<int, Pipe> data_P;
 extern unordered_map<int, CS> data_KS;
 
-using namespace std;
+
 
 inline void menu() {
     cout << "1. Добавить трубу" << '\n';
@@ -42,6 +42,7 @@ T get_correct_value(T min, T max) {
     return value;
 }
 
+// Шаблонная функция для получения списка идентификаторов из словаря
 template <typename T>
 vector<int> get_ids(const unordered_map<int, T>& dict)
 {
@@ -65,14 +66,17 @@ vector<int> get_ids(const unordered_map<int, T>& dict)
     return vector<int>(ids.begin(), ids.end());
 }
 
+
 template<typename T1, typename T2>
 using filter = bool(*)(const T1& dict, T2 param);
 
+// Функция-фильтр для сравнения по имени
 template<typename T>
 bool filter_by_name(const T& dict, string name) {
     return dict.name.find(name) != string::npos;
 }
 
+// Шаблонная функция для поиска элементов по заданному фильтру
 template <typename T1, typename T2>
 unordered_set<int> find_by_filter(const unordered_map<int, T1>& dict, filter<T1, T2> f, T2 par) {
     unordered_set<int> ids;
@@ -84,6 +88,7 @@ unordered_set<int> find_by_filter(const unordered_map<int, T1>& dict, filter<T1,
     return ids;
 }
 
+// Шаблонная функция для просмотра данных в словаре
 template <typename M>
 void view_data(unordered_map<int, M>& dict) {
     for (auto const& pair : dict) {
@@ -92,6 +97,7 @@ void view_data(unordered_map<int, M>& dict) {
     }
 }
 
+// Шаблонная функция для просмотра данных по конкретному идентификатору
 template <typename F>
 void view_id(unordered_map<int, F>& dict, int id) {
     for (auto const& pair : dict) {
@@ -102,6 +108,7 @@ void view_id(unordered_map<int, F>& dict, int id) {
     }
 }
 
+// Шаблонная функция для добавления объекта в словарь
 template <typename T>
 void add_to_dict(unordered_map<int, T>& dict) {
     T obj;
@@ -117,11 +124,12 @@ inline string get_str() {
     return str;
 }
 
-
+// Функция-фильтр для сравнения по статусу обслуживания трубы
 inline bool filter_by_status(const Pipe& dict, bool status) {
     return dict.maintenance == status;
 }
 
+// Функция-фильтр для сравнения по проценту незадействованных цехов КС
 inline bool filter_by_non_working(const CS& dict, int non_working) {
     return dict.num_department - dict.work_department == dict.num_department * non_working / 100;
 }
@@ -138,14 +146,18 @@ inline void thirth() {
             cout << "1 - по названию, 0 - по ремонту: ";
             if (bool choice3 = get_correct_value(0, 1)) {
                 cout << "Введите название: ";
+                // Ввод названия для фильтрации
                 string name = get_str();
+                // Поиск и просмотр данных труб по фильтру по названию
                 for (int i : find_by_filter(data_P, filter_by_name, name)) {
                     view_id(data_P, i);
                 }
             }
             else {
                 cout << "Введите статус: ";
+                // Ввод статуса для фильтрации
                 bool maintenance = get_correct_value(0, 1);
+                // Поиск и просмотр данных труб по фильтру по статусу обслуживания
                 for (int i : find_by_filter(data_P, filter_by_status, maintenance)) {
                     view_id(data_P, i);
                 }
@@ -155,14 +167,18 @@ inline void thirth() {
             cout << "1 - по названию, 0 - по проценту незадействованных цехов: ";
             if (bool choice4 = get_correct_value(0, 1)) {
                 cout << "Введите название: ";
+                // Ввод названия для фильтрации
                 string name = get_str();
+                // Поиск и просмотр данных КС по фильтру по названию
                 for (int i : find_by_filter(data_KS, filter_by_name, name)) {
                     view_id(data_KS, i);
                 }
             }
             else {
                 cout << "Введите процент: ";
+                // Ввод процента для фильтрации
                 int non_working = get_correct_value(0, 100);
+                // Поиск и просмотр данных КС по фильтру по проценту незадействованных цехов
                 for (int i : find_by_filter(data_KS, filter_by_non_working, non_working)) {
                     view_id(data_KS, i);
                 }
@@ -177,6 +193,7 @@ inline void fourth() {
         bool choice1 = get_correct_value(0, 1);
         vector<int> ids;
         cout << "Введите название трубы: ";
+        // Ввод названия трубы для фильтрации
         string name = get_str();
         unordered_set<int> set = find_by_filter(data_P, filter_by_name, name);
         if (set.size() == 0) {
@@ -191,12 +208,14 @@ inline void fourth() {
                     for (const auto& id : set) {
                         cout << id << '\n';
                     }
+                    // Получение выбранных id для удаления
                     ids = get_ids(data_P);
                     for (int id : ids) {
                         data_P.erase(id);
                     }
                 }
                 else {
+                    // Удаление всех труб с данным названием
                     for (int id : set) {
                         data_P.erase(id);
                     }
@@ -210,6 +229,7 @@ inline void fourth() {
                     for (const auto& id : set) {
                         cout << id << '\n';
                     }
+                    // Получение выбранных id для изменения
                     ids = get_ids(data_P);
                     for (int id : ids) {
                         data_P[id].change();
@@ -217,6 +237,7 @@ inline void fourth() {
                 }
                 else {
                     cout << "В ремонте?(0 - нет , 1 - да): ";
+                    // Изменение статуса ремонта для выбранных труб
                     for (int id : set) {
                         data_P[id].change();
                     }
@@ -235,6 +256,7 @@ inline void fif() {
         cout << "1 - удаление, 0 - изменение КС: ";
         bool choice = get_correct_value(0, 1);
         cout << "Введите название КС: ";
+        // Ввод названия КС для фильтрации
         string name = get_str();
         unordered_set<int> set = find_by_filter(data_KS, filter_by_name, name);
         if (set.size() == 0) {
@@ -243,9 +265,11 @@ inline void fif() {
         else {
             for (int id : set) {
                 if (choice) {
+                    // Удаление выбранных КС
                     data_KS.erase(id);
                 }
                 else {
+                    // Изменение выбранных КС
                     data_KS[id].change();
                 }
             }
@@ -258,6 +282,7 @@ inline void fif() {
 
 inline void six() {
     cout << "Введите название файла для записи: ";
+    // Ввод названия файла для записи
     string in_file = get_str();
     ofstream out(in_file);
     if (data_P.empty()) {
@@ -266,6 +291,7 @@ inline void six() {
     if (data_KS.empty()) {
         cout << "Нет КС" << '\n';
     }
+    // Сохранение данных в файл
     for (auto const& p : data_P) {
         if (!p.second.name.empty()) {
             data_P[p.first].save(out);
@@ -282,7 +308,8 @@ inline void seven() {
     cout << "Введите название файла для загрузки: ";
     string read_file = get_str();
     ifstream read(read_file);
-    if (read.peek() == std::ifstream::traits_type::eof()) {  // условие пустоты файла
+    // условие пустоты файла
+    if (read.peek() == std::ifstream::traits_type::eof()) {  
         cout << "Файла не существует!\n";
     }
     else {
