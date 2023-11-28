@@ -128,15 +128,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class.cpp" />
     <ClCompile Include="CS.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ConsoleGeneral.cpp" />
     <ClCompile Include="Pipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CS.h" />
-    <ClInclude Include="logging.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="header.h" />
     <ClInclude Include="Pipe.h" />
-    <ClInclude Include="Functions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
