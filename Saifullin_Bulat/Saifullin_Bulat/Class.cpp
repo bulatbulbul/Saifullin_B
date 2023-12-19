@@ -2,15 +2,11 @@
 #include "Pipe.h"
 #include "CS.h"
 #include "header.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
+#include <queue>
+#include <stack>
+
 using namespace std;
 
-//Проверяет, существует ли уже соединение между заданными вершинами графа.
 bool System::check_only(int x, int y) {
     int k = 0;
     for (auto& i : graphs) {
@@ -18,13 +14,11 @@ bool System::check_only(int x, int y) {
             k++;
             cout << "Это соединение уже существует" << endl;
         }
+        if (k == 0)
+            return true;
+        else return false;
     }
-    if (k == 0)
-        return true;
-    else return false;
 }
-
-// Проверяет, можно ли удалить объект с указанным идентификатором.
 bool System::check_obj(int x) {
     int k = 0;
     for (auto& i : graphs) {
@@ -36,8 +30,6 @@ bool System::check_obj(int x) {
     if (k == 0) return true;
     else return false;
 }
-
-//Проверяет, существует ли труба с указанным идентификатором в графе.
 bool System::checking(int x) {
     int n = 0;
     for (auto& i : graphs)
@@ -47,8 +39,6 @@ bool System::checking(int x) {
         return true;
     else return false;
 }
-
-//Проверяет, можно ли добавить соединение с указанным идентификатором.
 int System::check_graph(int x) {
     while (check_pipe(x) >= cs_group[x].getwork()) {
         cout << "Слишком много соединений для этой КС, выберете другую" << endl;
@@ -57,8 +47,6 @@ int System::check_graph(int x) {
     }
     return x;
 }
-
-//Проверяет, существует ли станция с указанным идентификатором.
 int System::check_existing(int x) {
     while (cs_group.find(x) == cs_group.end()) {
         cout << "Нет таких КС" << endl;
@@ -79,8 +67,6 @@ bool check_cs_name(CS cs, string name) {
 bool check_unworking(CS cs, double p) {
     return (cs.get_unused() >= p);
 }
-
-// Выполняет поиск станций по заданным критериям.
 vector<int> System::search_cs() {
     int x;
     vector <int> id;
@@ -105,7 +91,6 @@ vector<int> System::search_cs() {
     }
     return id;
 }
-//Выполняет поиск труб по заданным критериям.
 vector<int> System::search_p() {
     vector<int> ids;
     int x;
@@ -129,7 +114,6 @@ vector<int> System::search_p() {
     }
     return ids;
 }
-// Выводит информацию о трубах и станциях.
 void System::information() {
     for (auto& pipe : pipe_group) {
         cout << pipe.second << endl;
@@ -138,8 +122,6 @@ void System::information() {
         cout << cs.second << endl;
     }
 }
-
-
 void System::Graph::save_edge(ofstream& file) {
     file << id_entrance << endl << id_exit << endl << id_pipe << endl;
 }
@@ -148,28 +130,35 @@ void System::Graph::load_edge(ifstream& file) {
     file >> id_exit;
     file >> id_pipe;
 }
-//Сохранение
 void System::save() {
-    string x;
-    cout << "Введите название файла " << endl;
-    cin >> x;
-    ofstream file;
-    file.open(x + ".txt");
-    if (!file)
-        cout << "Ошибка" << endl;
-    else {
-        file << pipe_group.size() << " " << cs_group.size() << " " << graphs.size() << endl;
-        for (auto pipe : pipe_group) {
-            pipe.second.save_pipe(file);
+    if (pipe_group.size() or cs_group.size()) {
+        string x;
+        cout << "Введите название файла " << endl;
+        cin >> x;
+        ofstream file;
+        file.open("data/" + x + ".txt");
+        if (!file)
+            cout << "Ошибка" << endl;
+        else {
+            file << pipe_group.size() << " " << cs_group.size() << " " << graphs.size() << endl;
+            for (auto pipe : pipe_group) {
+                pipe.second.save_pipe(file);
+            }
+            for (auto cs : cs_group)
+                cs.second.save_cs(file);
+            for (auto edge : graphs)
+                edge.second.save_edge(file);
         }
-        for (auto cs : cs_group)
-            cs.second.save_cs(file);
-        for (auto edge : graphs)
-            edge.second.save_edge(file);
     }
-
 }
 void System::load() {
+    if (pipe_group.size() and cs_group.size()) {
+        cout << "После загрузки все введенные данные удалятся. Хотите ли вы их сохранить? (да-1, нет -0) " << endl;
+        if (correctnumber(0, 1)) {
+            save();
+        }
+
+    }
     string x;
     int len1, len2, len3;
     Pipe newP;
@@ -178,7 +167,7 @@ void System::load() {
     cout << "Введите название файла  " << endl;
     cin >> x;
     ifstream file;
-    file.open(x + ".txt");
+    file.open("data\\" + x + ".txt");
     if (!file)
         cout << "Нет таких файлов";
     else {
@@ -207,7 +196,6 @@ void System::load() {
         }
     }
 }
-
 void System::editcs() {
     vector <int> idcs;
     if (cs_group.size() != 0) {
@@ -271,7 +259,7 @@ void System::editcs() {
             }
         }
         if (edit == 3) {
-            cout << "1. ID одной КС, которую вы хотите удалить\n "
+            cout << "1. Введите ID одной КС, которую вы хотите удалить\n "
                 << "2. Удалить несколько КС\n " << endl;
             int d;
             d = correctnumber(1, 2);
@@ -401,8 +389,8 @@ void System::edit()
             }
         }
         if (edit == 3) {
-            cout << "1. ID одной трубы, которую вы хотите удалить \n"
-                << "1. Удалить несколько труб \n" << endl;
+            cout << "1. Введите ID одной трубы, которую вы хотите удалить \n"
+                << "2. Удалить несколько труб \n" << endl;
             int d;
             d = correctnumber(1, 2);
             if (d == 1) {
@@ -470,8 +458,6 @@ void System::edit()
     else
         cout << "Нет труб для редактирования" << endl;
 }
-
-//Проверяет количество соединений.
 int System::check_pipe(int x) {
     int k = 0;
     if (graphs.size() != 0) {
@@ -482,8 +468,6 @@ int System::check_pipe(int x) {
     }
     return k;
 }
-
-//Возвращает идентификатор трубы для указанного диаметра.
 int System::edge(int x) {
     int k = -1;
     for (auto& i : pipe_group) {
@@ -496,14 +480,11 @@ int System::edge(int x) {
     }
     return k;
 }
-
-// Создает таблицу смежности для графа.
 void System::adjacencytable(unordered_map<int, System::Graph>& p) {
     table.clear();
     for (auto& i : p)
         table[i.second.id_entrance].push_back(i.second);
 }
-//Выполняет топологическую сортировку для графа.
 void System::topsort(int x, unordered_map<int, int>& visited, vector<int>& vertexes) {
     visited[x] = 1;
     for (auto& i : table[x]) {
@@ -520,8 +501,6 @@ void System::topsort(int x, unordered_map<int, int>& visited, vector<int>& verte
     visited[x] = 2;
     vertexes.push_back(x);
 }
-
-//Выводит отсортированные вершины графа
 void System::sorted() {
     vector <int> vertexes;
     unordered_map <int, int> visited;
@@ -536,26 +515,25 @@ void System::sorted() {
         cout << vertexes.back() << " ";
         vertexes.pop_back();
     }
+    if (vertexes.empty()) {
+        cout << "В графе имеется Цикл";
+    }
     cout << endl;
 }
-
-//Вызывает сортировку графа.
 void System::sorting() {
     cout << "Сортировать граф" << endl;
     adjacencytable(graphs);
     sorted();
 }
 
-//(для вывода в поток): Выводит незадействованные объекты
+
 ostream& operator<<(ostream& out, unordered_set<int> s) {
-    cout << "Незадеййствованные оьъекты: ";
+    cout << "Незадействованные оьъекты: ";
     for (auto& i : s)
         cout << i << " ";
     cout << endl;
     return out;
 }
-
-//(для ввода из потока) : Позволяет вводить новые соединения между станциями
 istream& operator>> (istream& in, System& s) {
     System::Graph gr;
     cout << s.cs_group;
@@ -584,7 +562,7 @@ istream& operator>> (istream& in, System& s) {
                 cin >> p;
                 s.pipe_group.insert({ p.get_id(), p });
             }
-            cout << "Выберете диаметр трубы для соединения: 500, 700, 1000 or 1400" << endl;
+            cout << "Выберете диаметр трубы для соединения: 500, 700, 1000 или 1400" << endl;
             dia_pipe = correctdiametr<int>();
             k = s.edge(dia_pipe);
         }
@@ -598,3 +576,48 @@ istream& operator>> (istream& in, System& s) {
     return in;
 
 }
+
+
+
+void System::findShortestPath(int start, int end) {
+    System::Graph gr;
+    // Create a priority queue to store vertices and their distances
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
+    // Create a vector to store distances from the start vertex to all other vertices
+    vector<int> dist(cs_group.size() + pipe_group.size(), INT_MAX);
+
+    // Mark the start vertex as visited and initialize its distance as 0
+    dist[start] = 0;
+
+    // Insert the start vertex into the priority queue
+    pq.push({ 0, start });
+
+    // Process vertices and edges in the priority queue
+    while (!pq.empty()) {
+        int u = pq.top().second;  // Get the vertex with the smallest distance
+        pq.pop();
+
+        // Iterate over the adjacent vertices of the current vertex
+        for (const auto& edge : table[u]) {
+            int v = edge.id_exit;
+            int weight = getPipeLength(edge.id_pipe);  // Get the length of the pipe as the weight
+
+            // If the new distance is smaller than the current distance, update it
+            if (dist[v] > dist[u] + weight) {
+                dist[v] = dist[u] + weight;
+                pq.push({ dist[v], v });
+            }
+        }
+    }
+
+    // Output the shortest path distance from the start vertex to the end vertex
+    cout << dist[end] << endl;
+    if (dist[end] == INT_MAX) {
+        cout << "Нет пути из " << start << " в " << end << endl;
+    }
+    else {
+        cout << "Кратчайший путь из " << start << " в " << end << ": " << dist[end] << endl;
+    }
+}
+

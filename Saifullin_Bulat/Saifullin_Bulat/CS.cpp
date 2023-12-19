@@ -1,10 +1,4 @@
 #include "CS.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
 #include "header.h"
 #include "Graph.h"
 using namespace std;

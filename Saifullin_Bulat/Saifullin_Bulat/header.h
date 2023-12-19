@@ -1,12 +1,44 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include "Pipe.h"
 #include "CS.h"
 #include "Graph.h"
+#include <format>
+#include <chrono>
+#include <sstream>
+#include <queue>
+#include <limits>
+
 using namespace std;
+
+#define INPUT_LINE(in, str) getline(in>>ws, str); \
+						cerr << str << endl
+
+class redirect_output_wrapper
+{
+    std::ostream& stream;
+    std::streambuf* const old_buf;
+public:
+    redirect_output_wrapper(std::ostream& src)
+        :old_buf(src.rdbuf()), stream(src)
+    {
+    }
+
+    ~redirect_output_wrapper() {
+        stream.rdbuf(old_buf);
+    }
+    void redirect(std::ostream& dest)
+    {
+        stream.rdbuf(dest.rdbuf());
+    }
+};
+
+
 template <typename T>
 T correctnumber(T min, T max) {
     T x;
@@ -16,6 +48,7 @@ T correctnumber(T min, T max) {
         cin.clear();
         cin.ignore(INT_MAX, '\n');
     }
+    cerr << x << endl;
     return x;
 }
 
@@ -31,10 +64,10 @@ T correctdiametr() {
     return x;
 }
 
-//выводит их ID.
+
 template <typename T>
 ostream& operator<< (ostream& out, unordered_map <int, T>& p) {
-    out << "ID выхода: ";
+    out << "ID: ";
     for (auto& [i, obj] : p) {
         out << i << " ";
     }
@@ -46,8 +79,6 @@ using filter_p = bool (*) (Pipe p, T par);
 template <typename T>
 using filter_cs = bool(*) (CS cs, T par);
 template <typename T>
-
-//поиск
 vector <int> search_p_by_parametr(unordered_map <int, Pipe>& pipe_group, filter_p<T> f, T par) {
     vector <int> id;
     for (auto& pipe : pipe_group) {
@@ -65,3 +96,5 @@ vector <int> search_cs_by_parametr(unordered_map <int, CS>& cs_group, filter_cs<
     }
     return id;
 }
+
+;

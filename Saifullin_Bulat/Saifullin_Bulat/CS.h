@@ -1,5 +1,10 @@
 #pragma once
+#include <iostream>
 #include <fstream>
+#include <string>
+#include <vector>
+#include <float.h>
+#include <unordered_set>
 using namespace std;
 class CS
 {
@@ -23,5 +28,5 @@ public:
 private:
     int  workshop, working_workshop, idcs;
     double effectiveness;
-    //static int max_idd;
+
 };

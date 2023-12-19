@@ -18,6 +18,18 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CS.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="Pipe.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Class.cpp" />
+    <ClCompile Include="ConsoleGeneral.cpp" />
+    <ClCompile Include="CS.cpp" />
+    <ClCompile Include="Pipe.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -127,18 +139,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Class.cpp" />
-    <ClCompile Include="CS.cpp" />
-    <ClCompile Include="ConsoleGeneral.cpp" />
-    <ClCompile Include="Pipe.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CS.h" />
-    <ClInclude Include="Graph.h" />
-    <ClInclude Include="header.h" />
-    <ClInclude Include="Pipe.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

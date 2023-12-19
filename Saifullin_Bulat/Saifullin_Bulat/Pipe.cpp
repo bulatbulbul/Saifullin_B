@@ -1,10 +1,4 @@
 #include "Pipe.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
 #include "header.h"
 #include "Graph.h"
 using namespace std;
@@ -20,15 +14,13 @@ int Pipe::max_id = 0;
 istream& operator>> (istream& in, Pipe& p)
 {
     cout << "\n »ндекс трубы: " << p.idp;
-    cout << "\n¬ведите название трубы ";
-    cin.clear();
-    cin.ignore(INT_MAX, '\n');
-    getline(cin, p.name);
-    cout << "\n¬ведите длину трубы  ";
+    cout << "\n¬ведите название трубы: ";
+    INPUT_LINE(cin, p.name);
+    cout << "\n¬ведите длину трубы:  ";
     p.length = correctnumber(0.0, DBL_MAX);
-    cout << "\n¬ведите диаметр трубы ";
+    cout << "\n¬ведите диаметр трубы(500, 700, 1000 или 1400): ";
     p.diameter = correctdiametr<int>();
-    cout << "\n¬ведите состо€ние трубы(0 - в ремонте, 1 - в работе) ";
+    cout << "\n¬ведите состо€ние трубы(0 - в ремонте, 1 - в работе): ";
     p.status = correctnumber(0, 1);
     cout << status_check(p.status) << endl;
     return in;
@@ -41,6 +33,20 @@ ostream& operator<< (ostream& out, Pipe& p) {
     out << "—осто€ние(0 - в ремонте, 1 - в работе): " << status_check(p.status) << endl;
 
     return out;
+}
+
+double System::getPipeLength(int pipeId) const
+{
+    auto it = pipe_group.find(pipeId);
+
+    if (it != pipe_group.end())
+    {
+        return it->second.getPipeLength();
+    }
+    else
+    {
+        return 0.0;
+    }
 }
 void Pipe::edit_Pipe() {
     cout << "—осто€ние трубы: " << status_check(status) << endl;
